@@ -2,34 +2,37 @@ import getRandomName from '../src/getRandomName';
 import getRandomItemOfArray from '../src/getRandomItemOfArray';
 jest.mock('../src/getRandomItemOfArray', () => jest.fn());
 
-const names = [ 'n1', 'n2'];
-const adjectives = ['a1', 'a2'];
-const blackList = ['n1 a1'];
-const historical = ['n1 a2'];
-
 describe('When getRandomName is called', () => {
     test('Should call getRandomItemOfArray with names', () => {
-        getRandomName(names,
-            adjectives,
-            blackList,
-            historical
-        );
+        const names = [ 'n1', 'n2'];
+        getRandomName(names, [], [], []);
         expect(getRandomItemOfArray).toHaveBeenCalledWith(names);
     });
     test('Should call getRandomItemOfArray with adjectives', () => {
-        getRandomName(names,
-            adjectives,
-            blackList,
-            historical
-        );
+        const adjectives = ['a1', 'a2'];
+        getRandomName([], adjectives, [], []);
         expect(getRandomItemOfArray).toHaveBeenCalledWith(adjectives);
     });
     test('Should return a result with a name and adjective', () => {
-        getRandomName(names,
-            adjectives,
-            blackList,
-            historical
-        );
-        expect(getRandomItemOfArray).toHaveBeenCalledWith(adjectives);
+        getRandomItemOfArray.mockReturnValueOnce('Nome')
+                            .mockReturnValue('adjetivo');
+        const result = getRandomName([], [], [], []);
+        expect(result).toEqual("Nome adjetivo");
+    });
+    test('Should try again if random name is in blacklist', () => {
+        getRandomItemOfArray.mockReturnValueOnce('Nome')
+                            .mockReturnValueOnce('proibido')
+                            .mockReturnValueOnce('Nome')
+                            .mockReturnValue('permitido');
+        const result = getRandomName([], [], ['Nome proibido'], []);
+        expect(result).toEqual("Nome permitido");
+    });
+    test('Should try again if random name is already used', () => {
+        getRandomItemOfArray.mockReturnValueOnce('Nome')
+            .mockReturnValueOnce('usado')
+            .mockReturnValueOnce('Nome')
+            .mockReturnValue('novo');
+        const result = getRandomName([], [], [], ['Nome usado']);
+        expect(result).toEqual("Nome novo");
     });
 });
