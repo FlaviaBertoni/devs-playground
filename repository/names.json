@@ -1,0 +1,24 @@
+{
+  "names": [
+    "Carreta",
+    "Popeye",
+    "Mickey",
+    "Fofão",
+    "Capitão",
+    "Galinha",
+    "Ursinho"
+  ],
+  "adjectives": [
+    "Furacão",
+    "Brilhante",
+    "Vencedor",
+    "Pintadinha",
+    "Carinhoso",
+    "Zangado",
+    "Dengoso"
+  ],
+  "blackList": [
+    "Carreta Carinhoso",
+    "Carreta Zangado"
+  ]
+}
