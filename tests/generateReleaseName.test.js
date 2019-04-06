@@ -1,93 +1,105 @@
 import generateReleaseName from '../src/generateReleaseName';
 import getRandomName from '../src/getRandomName';
-const namesRepository = require('../src/namesRepository');
+import * as namesRepository from '../src/namesRepository';
 
-jest.mock('../src/getRandomName', () => jest.fn(() => 'n1 a3'));
+jest.mock('../src/getRandomName', () => jest.fn(() => 'name1 adjective3'));
 jest.mock('../src/namesRepository', () => ({
     getAllJSONRepositories: jest.fn( () => ({
-        names: [ 'n1', 'n2', 'n3'],
-        adjectives: [ 'a1', 'a2', 'a3' ],
-        blackList: [ 'n1 a2' ],
-        historical: [ 'n1 a1' ]
+        names: [ 'name1', 'name2', 'name3'],
+        adjectives: [ 'adjective1', 'adjective2', 'adjective3' ],
+        blackList: [ 'name1 adjective2' ],
+        history: [ 'name1 adjective1' ]
     })),
-    updateHistorical: jest.fn(),
+    writeHistory: jest.fn(),
 }));
 
 describe('When randomizer is called', () => {
     const emptyAlertMessage = 'Não existe nenhum nome ou adjetivo cadastrado! ' +
         '\nPor favor adicione dados no aquivo names da pasta repository.';
 
-    test('Should call getAllJSONRepositories', () => {
+    beforeAll(() => {
+        console.log = jest.fn();
+    });
+
+    it('Should call getAllJSONRepositories', () => {
         generateReleaseName();
         expect(namesRepository.getAllJSONRepositories).toHaveBeenCalled();
     });
-    test('Should call getRandomName', () => {
+
+    it('Should call getRandomName with the values retrieved from repositories', () => {
         generateReleaseName();
         expect(getRandomName).toHaveBeenCalledWith(
-            [ 'n1', 'n2', 'n3'],
-            [ 'a1', 'a2', 'a3' ],
-            [ 'n1 a2' ],
-            [ 'n1 a1' ]
+            [ 'name1', 'name2', 'name3'],
+            [ 'adjective1', 'adjective2', 'adjective3' ],
+            [ 'name1 adjective2' ],
+            [ 'name1 adjective1' ]
         );
     });
-    test('Should call updateHistorical with updated historical', () => {
+
+    it('Should call writeHistory with the updated history', () => {
         generateReleaseName();
-        expect(namesRepository.updateHistorical).toHaveBeenCalledWith(
-            [ 'n1 a1' , 'n1 a3']
+        expect(namesRepository.writeHistory).toHaveBeenCalledWith(
+            [ 'name1 adjective1' , 'name1 adjective3']
         );
     });
-    test('Should return the generated name', () => {
-        const result = generateReleaseName();
-        expect(result).toEqual('n1 a3');
+
+    it('Should log the generated name', () => {
+        generateReleaseName();
+        expect(console.log).toHaveBeenCalledWith('name1 adjective3');
     });
-    test('When all combinations are used should print a alert message', () => {
+
+    it('When all combinations are used it should log an alert message', () => {
         namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [ 'n1' ],
-            adjectives: [ 'a1', 'a2' ],
-            blackList: [ 'n1 a1' ],
-            historical: [ 'n1 a2' ]
+            names: [ 'name1' ],
+            adjectives: [ 'adjective1', 'adjective2' ],
+            blackList: [ 'name1 adjective1' ],
+            history: [ 'name1 adjective2' ]
         });
-        const result = generateReleaseName();
-        expect(result).toEqual('Todos os nomes já foram usados.');
+        generateReleaseName();
+        expect(console.log).toHaveBeenCalledWith('Todos os nomes já foram usados.');
     });
-    test('When names are null should print the empty alert message', () => {
+
+    it('When names are null it should log the empty alert message', () => {
         namesRepository.getAllJSONRepositories.mockReturnValue({
             names: null,
-            adjectives: [ 'a1' ],
+            adjectives: [ 'adjective1' ],
             blackList: [],
-            historical: []
+            history: []
         });
-        const result = generateReleaseName();
-        expect(result).toEqual(emptyAlertMessage);
+        generateReleaseName();
+        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
     });
-    test('When names are empty should print the empty alert message', () => {
+
+    it('When names are empty should log the empty alert message', () => {
         namesRepository.getAllJSONRepositories.mockReturnValue({
             names: [],
-            adjectives: [ 'a1' ],
+            adjectives: [ 'adjective1' ],
             blackList: [],
-            historical: []
+            history: []
         });
-        const result = generateReleaseName();
-        expect(result).toEqual(emptyAlertMessage);
+        generateReleaseName();
+        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
     });
-    test('When adjectives are null should print the empty alert message', () => {
+
+    it('When adjectives are null it should log the empty alert message', () => {
         namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [ 'n1' ],
+            names: [ 'name1' ],
             adjectives: null,
             blackList: [],
-            historical: []
+            history: []
         });
-        const result = generateReleaseName();
-        expect(result).toEqual(emptyAlertMessage);
+        generateReleaseName();
+        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
     });
-    test('When adjectives are empty should print the empty alert message', () => {
+
+    it('When adjectives are empty it should log the empty alert message', () => {
         namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [ 'n1' ],
+            names: [ 'name1' ],
             adjectives: [],
             blackList: [],
-            historical: []
+            history: []
         });
-        const result = generateReleaseName();
-        expect(result).toEqual(emptyAlertMessage);
+        generateReleaseName();
+        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
     });
 });

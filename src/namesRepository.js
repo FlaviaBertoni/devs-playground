@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-import { historicalRepository, namesRepository, dirRepository } from '../config';
+import { historyRepository, namesRepository, dirRepository } from '../config';
 
-const updateHistorical = (json) => {
-    fs.writeFile(historicalRepository, JSON.stringify(json), (err) => {
+const writeHistory = (json) => {
+    fs.writeFile(historyRepository, JSON.stringify(json), (err) => {
         if (err) console.error(err);
     });
 };
@@ -25,15 +25,15 @@ const readNamesRepository = () => {
     return {};
 };
 
-const readHistoricalRepository = () => (
-    fs.existsSync(historicalRepository)
-        ? JSON.parse(fs.readFileSync(historicalRepository))
+const readhistoryRepository = () => (
+    fs.existsSync(historyRepository)
+        ? JSON.parse(fs.readFileSync(historyRepository))
         : []
 );
 
 const getAllJSONRepositories = () => {
     const repositoryNames = readNamesRepository();
-    const historical = readHistoricalRepository();
+    const history = readhistoryRepository();
     const {
         names,
         adjectives,
@@ -44,8 +44,8 @@ const getAllJSONRepositories = () => {
         names,
         adjectives,
         blackList,
-        historical,
+        history,
     };
 };
 
-export { updateHistorical, getAllJSONRepositories }
+export { writeHistory, getAllJSONRepositories }

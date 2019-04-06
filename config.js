@@ -1,3 +1,3 @@
-export const historicalRepository = 'repository/historical.json';
-export const namesRepository = 'repository/names.json';
 export const dirRepository = 'repository';
+export const historyRepository = `${dirRepository}/history.json`;
+export const namesRepository = `${dirRepository}/names.json`;

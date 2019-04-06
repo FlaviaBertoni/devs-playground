@@ -1,15 +1,15 @@
 import getRandomItemOfArray from './getRandomItemOfArray';
 
-const isNameValid = (blackList, historical, name) => {
+const isNameValid = (blackList, history, name) => {
     return blackList.filter((n) => { return n === name }).length === 0
-        && historical.filter((n) => { return n === name }).length === 0;
+        && history.filter((n) => { return n === name }).length === 0;
 };
 
-const getRandomName = (names, adjectives, blackList, historical) => {
+const getRandomName = (names, adjectives, blackList, history) => {
     const name = getRandomItemOfArray(names) + " " + getRandomItemOfArray(adjectives);
-    return isNameValid(blackList, historical, name)
+    return isNameValid(blackList, history, name)
         ? name
-        : getRandomName(names, adjectives, blackList, historical);
+        : getRandomName(names, adjectives, blackList, history);
 };
 
 export default getRandomName;

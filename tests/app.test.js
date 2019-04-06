@@ -1,11 +1,12 @@
-jest.mock('../src/generateReleaseName', () => jest.fn(() => 'Release name'));
+import generateReleaseName from '../src/generateReleaseName';
+
+jest.mock('../src/generateReleaseName', () => jest.fn());
 
 describe('When app is imported', () => {
     beforeEach(() => {
-        console.log = jest.fn();
         require('../src/app');
     });
-    it('Should log the generated release name', () => {
-        expect(console.log).toHaveBeenCalledWith('Release name');
+    it('Should call generateReleaseName', () => {
+        expect(generateReleaseName).toHaveBeenCalled();
     });
 });
