@@ -1,10 +1,10 @@
 const fs = require('fs');
 
-import { historicalRepository, namesRepository } from './config';
+import { historicalRepository, namesRepository } from '../config';
 
 const updateHistorical = (json) => {
     fs.writeFile(historicalRepository, JSON.stringify(json), 'utf8', (err) => {
-        if (err) throw err;
+        if (err) console.error(err);
     });
 };
 
@@ -26,4 +26,3 @@ const getAllJSONRepositories = () => {
 };
 
 export { updateHistorical, getAllJSONRepositories }
-export default { updateHistorical, getAllJSONRepositories }

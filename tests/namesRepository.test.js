@@ -1,10 +1,14 @@
 import { updateHistorical, getAllJSONRepositories } from '../src/namesRepository';
-import { historicalRepository, namesRepository } from "../src/config";
+import { historicalRepository, namesRepository } from "../config";
 import fs from 'fs';
-jest.mock('fs', () => ({ writeFile: jest.fn(), readFileSync: jest.fn() }));
+jest.mock('fs', () => ({
+    writeFile: jest.fn((p1, p2, p3, callback) => callback()),
+    readFileSync: jest.fn()
+}));
 
 describe('When updateHistorical is called', () => {
     test('Should call writeFile with historicalRepository and json string param', () => {
+        const spyConsoleError = jest.spyOn(console, 'error');
         const json = [ 'n 1', 'n 2'];
         updateHistorical(json);
         expect(fs.writeFile).toHaveBeenCalledWith(
@@ -13,6 +17,16 @@ describe('When updateHistorical is called', () => {
             'utf8',
             expect.any(Function)
         );
+        expect(spyConsoleError).not.toHaveBeenCalled();
+    });
+    test('When an error is returned should log error', () => {
+        const spyConsoleError = jest.spyOn(console, 'error');
+        const error = new Error('write file fail');
+        fs.writeFile = (p1, p2, p3, callback) => {
+            callback(error);
+        };
+        updateHistorical([]);
+        expect(spyConsoleError).toHaveBeenCalledWith(error);
     });
 });
 

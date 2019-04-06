@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@stryker-mutator/core": "^1.2.0",
+    "@stryker-mutator/html-reporter": "^1.2.0",
+    "@stryker-mutator/javascript-mutator": "^1.2.0",
+    "@stryker-mutator/jest-runner": "^1.2.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "jest": "^24.7.1"

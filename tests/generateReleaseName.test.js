@@ -39,10 +39,10 @@ describe('When randomizer is called', () => {
     });
     test('When all combinations are used should print a alert message', () => {
         namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [],
-            adjectives: [],
-            blackList: [],
-            historical: { names: [] }
+            names: [ 'n1' ],
+            adjectives: [ 'a1', 'a2' ],
+            blackList: [ 'n1 a1' ],
+            historical: { names: [ 'n1 a2' ] }
         });
         const result = generateReleaseName();
         expect(result).toEqual('Todos os nomes já foram usados.');
