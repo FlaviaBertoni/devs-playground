@@ -2,7 +2,7 @@
   "name": "random-relase-names",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "jest"
   },
@@ -15,12 +15,8 @@
     "@stryker-mutator/jest-runner": "^1.2.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
-    "jest": "^24.7.1"
-  },
-  "dependencies": {
-    "@babel/core": "^7.4.3",
+    "jest": "^24.7.1",
     "@babel/preset-env": "^7.4.3",
-    "babel-jest": "^24.7.1",
-    "save": "^2.3.3"
+    "babel-jest": "^24.7.1"
   }
 }
