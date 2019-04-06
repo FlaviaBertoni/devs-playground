@@ -2,4 +2,4 @@ require('babel-register')({
     presets: [ 'env' ]
 });
 
-module.exports = require('./src/randomizer.js');
+module.exports = require('./app.js');

@@ -26,3 +26,4 @@ const getAllJSONRepositories = () => {
 };
 
 export { updateHistorical, getAllJSONRepositories }
+export default { updateHistorical, getAllJSONRepositories }
