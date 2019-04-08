@@ -1,6 +1,7 @@
 import { writeHistory, getAllJSONRepositories } from '../src/namesRepository';
-import { dirRepository, historyRepository, namesRepository } from "../config";
+import { directoryRepositoryPath, historyRepositoryPath, namesRepositoryPath } from "../config";
 import fs from 'fs';
+
 jest.mock('fs', () => ({
     writeFile: jest.fn((p1, p2, callback) => callback()),
     readFileSync: jest.fn(),
@@ -13,11 +14,11 @@ describe('When writeHistory is called', () => {
         console.error = jest.fn();
     });
 
-    it('Should call writeFile with historyRepository and a json string param', () => {
+    it('Should call writeFile with historyRepositoryPath and a json string param', () => {
         const json = [ 'n 1', 'n 2'];
         writeHistory(json);
         expect(fs.writeFile).toHaveBeenCalledWith(
-            historyRepository,
+            historyRepositoryPath,
             JSON.stringify(json),
             expect.any(Function)
         );
@@ -42,13 +43,13 @@ describe('When getAllJSONRepositories is called', () => {
         fs.readFileSync.mockReturnValueOnce(JSON.stringify(names))
                         .mockReturnValue(JSON.stringify(history));
     });
-    it('Should call readFileSync with namesRepository', () => {
+    it('Should call readFileSync with namesRepositoryPath', () => {
         getAllJSONRepositories();
-        expect(fs.readFileSync).toHaveBeenCalledWith(namesRepository);
+        expect(fs.readFileSync).toHaveBeenCalledWith(namesRepositoryPath);
     });
-    it('Should call readFileSync with historyRepository', () => {
+    it('Should call readFileSync with historyRepositoryPath', () => {
         getAllJSONRepositories();
-        expect(fs.readFileSync).toHaveBeenCalledWith(historyRepository);
+        expect(fs.readFileSync).toHaveBeenCalledWith(historyRepositoryPath);
     });
     it('Should return an json with names, adjectives, blacklist and history', () => {
         const result = getAllJSONRepositories();
@@ -62,20 +63,20 @@ describe('When getAllJSONRepositories is called', () => {
     it('When dir respository do not exists should create it', () => {
         fs.existsSync.mockReturnValue(false);
         getAllJSONRepositories();
-        expect(fs.mkdirSync).toHaveBeenCalledWith(dirRepository);
+        expect(fs.mkdirSync).toHaveBeenCalledWith(directoryRepositoryPath);
     });
     it('When dir respository exists should not create it', () => {
         fs.existsSync.mockReturnValueOnce(false)
                      .mockReturnValue(true);
         getAllJSONRepositories();
-        expect(fs.mkdirSync).not.toHaveBeenCalledWith(dirRepository);
+        expect(fs.mkdirSync).not.toHaveBeenCalledWith(directoryRepositoryPath);
     });
     it('When names respository do not exists should create and initialize it', () => {
         fs.existsSync.mockReturnValue(false);
         fs.writeFile = jest.fn((p1, p2, callback) => { callback() });
         getAllJSONRepositories();
         expect(fs.writeFile).toHaveBeenCalledWith(
-            namesRepository,
+            namesRepositoryPath,
             JSON.stringify({
                     names: [],
                     adjectives: [],

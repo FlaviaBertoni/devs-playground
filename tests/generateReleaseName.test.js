@@ -48,58 +48,76 @@ describe('When randomizer is called', () => {
         expect(console.log).toHaveBeenCalledWith('name1 adjective3');
     });
 
-    it('When all combinations are used it should log an alert message', () => {
-        namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [ 'name1' ],
-            adjectives: [ 'adjective1', 'adjective2' ],
-            blackList: [ 'name1 adjective1' ],
-            history: [ 'name1 adjective2' ]
+    describe('When all combinations are used', () => {
+        beforeEach(() => {
+            namesRepository.getAllJSONRepositories.mockReturnValue({
+                names: [ 'name1' ],
+                adjectives: [ 'adjective1', 'adjective2' ],
+                blackList: [ 'name1 adjective1' ],
+                history: [ 'name1 adjective2' ]
+            });
         });
-        generateReleaseName();
-        expect(console.log).toHaveBeenCalledWith('Todos os nomes já foram usados.');
+        it('Should log an alert message', () => {
+            generateReleaseName();
+            expect(console.log).toHaveBeenCalledWith('Todos os nomes já foram usados.');
+        });
+        it('Should not call getRandomName', () => {
+            generateReleaseName();
+            expect(getRandomName).not.toHaveBeenCalled();
+        });
     });
 
-    it('When names are null it should log the empty alert message', () => {
-        namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: null,
-            adjectives: [ 'adjective1' ],
-            blackList: [],
-            history: []
+    describe('When is not able to generate release name', () => {
+        beforeEach(() => {
+            namesRepository.getAllJSONRepositories.mockReturnValue({
+                names: null,
+                adjectives: [ 'adjective1' ],
+                blackList: [],
+                history: []
+            });
         });
-        generateReleaseName();
-        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
-    });
 
-    it('When names are empty should log the empty alert message', () => {
-        namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [],
-            adjectives: [ 'adjective1' ],
-            blackList: [],
-            history: []
+        it('Should not call getRandomName', () => {
+            generateReleaseName();
+            expect(getRandomName).not.toHaveBeenCalled();
         });
-        generateReleaseName();
-        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
-    });
 
-    it('When adjectives are null it should log the empty alert message', () => {
-        namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [ 'name1' ],
-            adjectives: null,
-            blackList: [],
-            history: []
+        it('When names are null it should log the empty alert message', () => {
+            generateReleaseName();
+            expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
         });
-        generateReleaseName();
-        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
-    });
 
-    it('When adjectives are empty it should log the empty alert message', () => {
-        namesRepository.getAllJSONRepositories.mockReturnValue({
-            names: [ 'name1' ],
-            adjectives: [],
-            blackList: [],
-            history: []
+        it('When names are empty should log the empty alert message', () => {
+            namesRepository.getAllJSONRepositories.mockReturnValue({
+                names: [],
+                adjectives: [ 'adjective1' ],
+                blackList: [],
+                history: []
+            });
+            generateReleaseName();
+            expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
         });
-        generateReleaseName();
-        expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
+
+        it('When adjectives are null it should log the empty alert message', () => {
+            namesRepository.getAllJSONRepositories.mockReturnValue({
+                names: [ 'name1' ],
+                adjectives: null,
+                blackList: [],
+                history: []
+            });
+            generateReleaseName();
+            expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
+        });
+
+        it('When adjectives are empty it should log the empty alert message', () => {
+            namesRepository.getAllJSONRepositories.mockReturnValue({
+                names: [ 'name1' ],
+                adjectives: [],
+                blackList: [],
+                history: []
+            });
+            generateReleaseName();
+            expect(console.log).toHaveBeenCalledWith(emptyAlertMessage);
+        });
     });
 });

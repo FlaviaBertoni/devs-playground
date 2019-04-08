@@ -1,19 +1,19 @@
 const fs = require('fs');
 
-import { historyRepository, namesRepository, dirRepository } from '../config';
+import { historyRepositoryPath, namesRepositoryPath, directoryRepositoryPath } from '../config';
 
 const writeHistory = (json) => {
-    fs.writeFile(historyRepository, JSON.stringify(json), (err) => {
+    fs.writeFile(historyRepositoryPath, JSON.stringify(json), (err) => {
         if (err) console.error(err);
     });
 };
 
 const readNamesRepository = () => {
-    if (fs.existsSync(namesRepository)) return JSON.parse(fs.readFileSync(namesRepository));
-    if (!fs.existsSync(dirRepository)) fs.mkdirSync(dirRepository);
+    if (fs.existsSync(namesRepositoryPath)) return JSON.parse(fs.readFileSync(namesRepositoryPath));
+    if (!fs.existsSync(directoryRepositoryPath)) fs.mkdirSync(directoryRepositoryPath);
 
     fs.writeFile(
-        namesRepository,
+        namesRepositoryPath,
         JSON.stringify({
                 names: [],
                 adjectives: [],
@@ -25,15 +25,15 @@ const readNamesRepository = () => {
     return {};
 };
 
-const readhistoryRepository = () => (
-    fs.existsSync(historyRepository)
-        ? JSON.parse(fs.readFileSync(historyRepository))
+const readhistoryRepositoryPath = () => (
+    fs.existsSync(historyRepositoryPath)
+        ? JSON.parse(fs.readFileSync(historyRepositoryPath))
         : []
 );
 
 const getAllJSONRepositories = () => {
     const repositoryNames = readNamesRepository();
-    const history = readhistoryRepository();
+    const history = readhistoryRepositoryPath();
     const {
         names,
         adjectives,
