@@ -1,9 +1,9 @@
+import fs from 'fs';
 import { writeHistory, getAllJSONRepositories } from '../src/namesRepository';
 import { directoryRepositoryPath, historyRepositoryPath, namesRepositoryPath } from "../config";
-import fs from 'fs';
 
 jest.mock('fs', () => ({
-    writeFile: jest.fn((p1, p2, callback) => callback()),
+    writeFile: jest.fn((fileName, data, callback) => callback()),
     readFileSync: jest.fn(),
     existsSync: jest.fn(() => true),
     mkdirSync: jest.fn()
@@ -15,7 +15,7 @@ describe('When writeHistory is called', () => {
     });
 
     it('Should call writeFile with historyRepositoryPath and a json string param', () => {
-        const json = [ 'n 1', 'n 2'];
+        const json = ['name 1', 'name 2'];
         writeHistory(json);
         expect(fs.writeFile).toHaveBeenCalledWith(
             historyRepositoryPath,
@@ -24,9 +24,10 @@ describe('When writeHistory is called', () => {
         );
         expect(console.error).not.toHaveBeenCalled();
     });
-    it('When an error is returned should log error', () => {
-        const error = new Error('write file fail');
-        fs.writeFile = (p1, p2, callback) => {
+
+    it('When an error is returned it should log an error', () => {
+        const error = new Error('failed to write file');
+        fs.writeFile = (fileName, data, callback) => {
             callback(error);
         };
         writeHistory([]);
@@ -35,23 +36,26 @@ describe('When writeHistory is called', () => {
 });
 
 describe('When getAllJSONRepositories is called', () => {
-    const names =  { names: ['n1', 'n2'], adjectives: ['a1', 'a2'], blackList: ['n1 a2'] };
-    const history = ['n1 a1'];
+    const names =  { names: ['name 1', 'name 2'], adjectives: ['adjective 1', 'adjective 2'], blackList: ['name 1 adjective 2'] };
+    const history = ['name 1 adjective 1'];
 
     beforeEach(() => {
         fs.writeFile = jest.fn();
         fs.readFileSync.mockReturnValueOnce(JSON.stringify(names))
                         .mockReturnValue(JSON.stringify(history));
     });
+
     it('Should call readFileSync with namesRepositoryPath', () => {
         getAllJSONRepositories();
         expect(fs.readFileSync).toHaveBeenCalledWith(namesRepositoryPath);
     });
+
     it('Should call readFileSync with historyRepositoryPath', () => {
         getAllJSONRepositories();
         expect(fs.readFileSync).toHaveBeenCalledWith(historyRepositoryPath);
     });
-    it('Should return an json with names, adjectives, blacklist and history', () => {
+
+    it('Should return a JSON with names, adjectives, blacklist and history', () => {
         const result = getAllJSONRepositories();
         expect(result).toEqual({
             names: names.names,
@@ -60,20 +64,23 @@ describe('When getAllJSONRepositories is called', () => {
             history: history,
         });
     });
-    it('When dir respository do not exists should create it', () => {
+
+    it('When the respository directory does not exists it should create it', () => {
         fs.existsSync.mockReturnValue(false);
         getAllJSONRepositories();
         expect(fs.mkdirSync).toHaveBeenCalledWith(directoryRepositoryPath);
     });
-    it('When dir respository exists should not create it', () => {
+
+    it('When the respository directory exists it should not recreate it', () => {
         fs.existsSync.mockReturnValueOnce(false)
                      .mockReturnValue(true);
         getAllJSONRepositories();
         expect(fs.mkdirSync).not.toHaveBeenCalledWith(directoryRepositoryPath);
     });
-    it('When names respository do not exists should create and initialize it', () => {
+
+    it('When the names respository does not exists it should create and initialize it', () => {
         fs.existsSync.mockReturnValue(false);
-        fs.writeFile = jest.fn((p1, p2, callback) => { callback() });
+        fs.writeFile = jest.fn((fileName, data, callback) => { callback() });
         getAllJSONRepositories();
         expect(fs.writeFile).toHaveBeenCalledWith(
             namesRepositoryPath,
@@ -87,14 +94,16 @@ describe('When getAllJSONRepositories is called', () => {
         );
         expect(console.error).not.toHaveBeenCalled();
     });
-    it('When history respository do not exists should return empty array', () => {
+
+    it('When history respository does not exists it should return an empty array', () => {
         fs.existsSync.mockReturnValue(false);
         const result = getAllJSONRepositories();
         expect(result).toEqual(expect.objectContaining([]));
     });
-    it('When an error is returned on writeFile should log error', () => {
-        const error = new Error('write file fail');
-        fs.writeFile = (p1, p2, callback) => {
+
+    it('When an error is returned on writeFile it should log an error', () => {
+        const error = new Error('failed to write file');
+        fs.writeFile = (fileName, data, callback) => {
             callback(error);
         };
         getAllJSONRepositories();

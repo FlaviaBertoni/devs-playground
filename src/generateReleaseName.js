@@ -6,10 +6,11 @@ const doNotHaveItems = array => !Array.isArray(array) || array.length === 0;
 const checkIfAllPossibleReleaseNamesWasUsed = (names, adjectives, blackList = [], history) =>
     (names.length * adjectives.length - blackList.length) === history.length;
 
+
 const isAbleToGenerateReleaseName = (names, adjectives, blackList, history) => {
     if (doNotHaveItems(names) || doNotHaveItems(adjectives)) {
         console.log('Não existe nenhum nome ou adjetivo cadastrado! ' +
-            '\nPor favor adicione dados no aquivo names da pasta repository.');
+            '\nPor favor adicione dados no aquivo names.json da pasta repository.');
         return false;
     }
 

@@ -15,7 +15,7 @@ jest.mock('../src/namesRepository', () => ({
 
 describe('When randomizer is called', () => {
     const emptyAlertMessage = 'Não existe nenhum nome ou adjetivo cadastrado! ' +
-        '\nPor favor adicione dados no aquivo names da pasta repository.';
+        '\nPor favor adicione dados no aquivo names.json da pasta repository.';
 
     beforeAll(() => {
         console.log = jest.fn();
